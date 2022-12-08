@@ -34,6 +34,7 @@ describe('ReviewService', () => {
 
   it ('should return productId', async () => {
 	 const mockProductId = new Types.ObjectId().toHexString();
+	 console.log(new Types.ObjectId().toHexString());
 	 reviewRepo().find().exec.mockReturnValueOnce([{productId: mockProductId}]);
 	 const res = await service.findByProductId(mockProductId);
 	 expect(res[0].productId).toBe(mockProductId);
