@@ -27,7 +27,6 @@
 		"arrow-return-shorthand": true,
 		"class-name": true,
 		"file-name-casing": [true, "kebab-case"],
-		"interface-name": [true, "always-prefix"],
 		"prefer-switch": [true, { "min-cases": 3 }],
 		"switch-final-break": true,
 		"import-spacing": true,
