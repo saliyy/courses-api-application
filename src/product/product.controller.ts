@@ -1,33 +1,70 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post } from '@nestjs/common';
+import {
+	Body,
+	Controller,
+	Delete,
+	Get,
+	HttpCode,
+	NotFoundException,
+	Param,
+	Patch,
+	Post,
+	UsePipes,
+	ValidationPipe
+} from '@nestjs/common';
 import { FindProductDto } from './dto/find-product.dto';
-import { ProductModel } from './product.model';
+import {CreateProductDto} from './dto/create-product.dto';
+import {ProductService} from './product.service';
+import {IdValidatePipe} from './pipes/IdValidatePipe';
 
 @Controller('product')
 export class ProductController {
 
-	@Post('create')
-	async create(@Body() dto: Omit<ProductModel, '_id'>) {
+	constructor(private readonly productService: ProductService) {}
 
+	@Post('create')
+	@UsePipes(new ValidationPipe())
+	async create(@Body() dto: CreateProductDto) {
+		return this.productService.create(dto);
 	}
 
 	@Get(':id')
-	async get(@Param('id') id: string) {
+	async get(@Param('id', IdValidatePipe) id: string) {
+		const product = await this.productService.findById(id);
 
+		if (!product) {
+			throw new NotFoundException('not found product');
+		}
+
+		return product;
 	}
 
 	@Delete(':id')
-	async delete(@Param('id') id: string) {
+	async delete(@Param('id', IdValidatePipe) id: string) {
+		const deletedProduct = await this.productService.deleteById(id);
 
+		if (!deletedProduct) {
+			throw new NotFoundException('not found product');
+		}
+
+		return deletedProduct;
 	}
 
 	@Patch(':id')
-	async patch(@Param('id') id: string, @Body() dto: ProductModel) {
+	@UsePipes(new ValidationPipe())
+	async patch(@Param('id', IdValidatePipe) id: string, @Body() dto: CreateProductDto) {
+		const productToUpdate = await this.productService.updateById(id, dto);
 
+		if (!productToUpdate) {
+			throw new NotFoundException('not found product to update');
+		}
+
+		return productToUpdate;
 	}
 
-	@HttpCode(200)
 	@Post()
+	@HttpCode(200)
+	@UsePipes(new ValidationPipe())
 	async find(@Body() dto: FindProductDto) {
-
+		return this.productService.findWithReviews(dto);
 	}
 }

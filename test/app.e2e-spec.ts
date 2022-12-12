@@ -4,7 +4,7 @@ import * as request from 'supertest';
 import {AppModule} from '../src/app.module';
 import {CreateReviewDto} from '../src/review/dto/create-review.dto';
 import {Types, disconnect} from 'mongoose';
-import {create} from 'domain';
+import {AuthLoginDto} from '../src/auth/dto/auth-login.dto';
 
 const productId = new Types.ObjectId().toHexString();
 
@@ -16,10 +16,17 @@ const testDto: CreateReviewDto = {
 	productId
 };
 
+const loginBody: AuthLoginDto = {
+	login: 'test@mail.com',
+	password: 'test_password'
+};
+
 describe('AppController (e2e)', () => {
 	let app: INestApplication;
 
 	let createdId: string;
+
+	let token: string;
 
 	beforeEach(async () => {
 		const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -28,6 +35,16 @@ describe('AppController (e2e)', () => {
 
 		app = moduleFixture.createNestApplication();
 		await app.init();
+	});
+
+
+	it('/gets token from login api', async (done) => {
+		return request(app.getHttpServer())
+			.post('/auth/login')
+			.send(loginBody)
+			.then(({body}: request.Response) => {
+				token = body.access_token;
+			});
 	});
 
 	it('/review/create (POST)', async (done) => {

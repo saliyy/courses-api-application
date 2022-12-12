@@ -1,32 +1,90 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post } from '@nestjs/common';
+import {
+	BadRequestException,
+	Body,
+	Controller,
+	Delete,
+	Get,
+	HttpCode,
+	NotFoundException,
+	Param,
+	Patch,
+	Post,
+	UsePipes,
+	ValidationPipe
+} from '@nestjs/common';
 import { FindTopPageDto } from './dto/find-top-page.dto';
-import { TopPageModel } from './top-page.model';
+import {CreateTopPageDto} from './dto/create-top-page.dto';
+import {TopPageService} from './top-page.service';
+import {IdValidatePipe} from '../product/pipes/IdValidatePipe';
 
 @Controller('top-page')
 export class TopPageController {
-	@Post('create')
-	async create(@Body() dto: Omit<TopPageModel, '_id'>) {
 
+	constructor(private readonly topPageService: TopPageService) {}
+
+
+	@Post('create')
+	@UsePipes(new ValidationPipe())
+	async create(@Body() dto: CreateTopPageDto) {
+		return this.topPageService.create(dto);
 	}
 
 	@Get(':id')
-	async get(@Param('id') id: string) {
+	async get(@Param('id', IdValidatePipe) id: string) {
+		const topPage = await this.topPageService.findById(id);
 
+		if (!topPage) {
+			throw new NotFoundException('not found top page');
+		}
+
+		return topPage;
 	}
 
 	@Delete(':id')
-	async delete(@Param('id') id: string) {
+	async delete(@Param('id', IdValidatePipe) id: string) {
+		const deletedTopPage = await this.topPageService.delete(id);
 
+		if (!deletedTopPage) {
+			throw new NotFoundException('error to delete');
+		}
+
+		return deletedTopPage;
+	}
+
+
+	@Get('byAlias/:byAlias')
+	async getByAlias(@Param('byAlias') alias: string) {
+		const pageByAlias = await this.topPageService.findByAlias(alias);
+
+		if (!pageByAlias) {
+			throw new BadRequestException('no found page with such alias');
+		}
+
+		return pageByAlias;
 	}
 
 	@Patch(':id')
-	async patch(@Param('id') id: string, @Body() dto: TopPageModel) {
+	@UsePipes(new ValidationPipe())
+	async patch(@Param('id', IdValidatePipe) id: string, @Body() dto: CreateTopPageDto) {
+		const updatedPage = await this.topPageService.updateById(id, dto);
 
+		if (!updatedPage) {
+			throw new NotFoundException('error to update');
+		}
+
+		return updatedPage;
 	}
 
 	@HttpCode(200)
-	@Post()
+	@UsePipes(new ValidationPipe())
+	@Post('find')
 	async find(@Body() dto: FindTopPageDto) {
+		const pagesByCategory = await this.topPageService.findWithCategories(dto);
 
+		if (!pagesByCategory.length) {
+			throw new BadRequestException('no pages with such category');
+		}
+
+		return pagesByCategory;
 	}
 }
