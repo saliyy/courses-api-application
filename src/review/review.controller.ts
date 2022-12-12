@@ -9,6 +9,7 @@ export class ReviewController {
 	constructor(private readonly reviewService: ReviewService) {}
 
 	@Post('create')
+	@UseGuards(JwtAuthGuard)
 	async create(@Body() dto: CreateReviewDto) {
 		return this.reviewService.create(dto);
 	}
@@ -30,6 +31,7 @@ export class ReviewController {
 
 
 	@Delete('byProduct/:productId')
+	@UseGuards(JwtAuthGuard)
 	async deleteByProduct(@Param('productId') productId: string) {
 		return this.reviewService.deleteProductId(productId);
 	}
