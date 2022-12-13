@@ -91,4 +91,9 @@ export class TopPageController {
 
 		return pagesByCategory;
 	}
+
+	@Get('textSearch/:text')
+	async findByText(@Param('text') text: string) {
+		return this.topPageService.findByText(text);
+	}
 }

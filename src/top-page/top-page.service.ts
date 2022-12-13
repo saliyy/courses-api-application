@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import {Injectable, Param} from '@nestjs/common';
 import {InjectModel} from 'nestjs-typegoose';
 import {TopPageModel} from './top-page.model';
 import {ModelType} from '@typegoose/typegoose/lib/types';
@@ -31,5 +31,14 @@ export class TopPageService {
 
 	async findWithCategories(dto: FindTopPageDto) {
 		return this.topPageModel.find({ firstCategory: dto.firstCategory }).exec();
+	}
+
+	async findByText(text: string) {
+		return this.topPageModel.find({
+			$text: {
+				$search: text,
+				$caseSensitive: false
+			}
+		}).exec();
 	}
 }
