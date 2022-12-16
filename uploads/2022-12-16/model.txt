@@ -1,0 +1,25 @@
+User:
+id,
+name, 
+isActive, 
+tariffId,
+
+File:
+id,
+user_id,
+created_at,
+updated_at,
+archived_at,
+accessLink?,
+type,
+meta: json,
+
+
+Group:
+id,
+name,
+users: [],
+owner_id => User,
+created_at,
+updated_at,
+description,
