@@ -11,7 +11,7 @@ export class FilesController {
 
 	@Post('upload')
 	@HttpCode(200)
-	@UseGuards(JwtAuthGuard)
+	// @UseGuards(JwtAuthGuard)
 	@UseInterceptors(FileInterceptor('files'))
 	async upload(@UploadedFile() file: Express.Multer.File): Promise<FileElementsResponse[]> {
 		return this.fileService.saveFiles([file]);

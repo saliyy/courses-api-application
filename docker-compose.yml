@@ -1,14 +1,14 @@
 version: '3.1'
 
 services:
-  top-api:
-    image: top-api:latest
-    container_name: top-api
-    restart: always
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./.env:/opt/app/.env
+  #top-api:
+   # image: top-api:latest
+    #container_name: top-api
+    #restart: always
+    #ports:
+     # - "3000:3000"
+    #volumes:
+     # - ./.env:/opt/app/.env
   mongo:
     container_name: mongo
     image: mongo
