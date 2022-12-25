@@ -31,7 +31,7 @@ export class FilesService {
 			}
 
 			uploadedFiles.push({
-				url: getFilePath(file),
+				url: `${uploadFolder}/${file.originalname}`,
 				name: file.originalname
 			});
 		}

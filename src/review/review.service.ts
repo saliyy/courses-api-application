@@ -24,4 +24,14 @@ export class ReviewService {
 	async deleteProductId(productId: string) {
 		return this.reviewModel.deleteMany({ productId: new Types.ObjectId(productId) }).exec();
 	}
+
+	public getFormatForTelegram(dto: CreateReviewDto): string {
+		return `
+			Имя: ${dto.name}
+			Заголовок: ${dto.title}
+			Описание: ${dto.description}
+			Рейтинг: ${dto.rating}
+			ID Продукта: ${dto.productId}
+		`;
+	}
 }

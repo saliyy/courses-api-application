@@ -9,6 +9,8 @@ export const getMongoConfig = async (configService: ConfigService): Promise<Type
 };
 
 
+
+
 const getMongoConnectionString = (configService: ConfigService): string => {
 	return 'mongodb://' +
 		configService.get('MONGO_LOGIN') +
