@@ -18,16 +18,16 @@ import {getTelegramConfig} from './config/telegram.config';
 			inject: [ConfigService],
 			useFactory: getMongoConfig
 		}),
+		TelegramModule.forRootAsync({
+			imports: [ConfigModule],
+			inject: [ConfigService],
+			useFactory: getTelegramConfig
+		}),
 		AuthModule,
 		TopPageModule,
 		ProductModule,
 		ReviewModule,
 		FilesModule,
-		TelegramModule.forRootAsync({
-			imports: [ConfigModule],
-			inject: [ConfigService],
-			useFactory: getTelegramConfig
-		})
 	]
 })
 export class AppModule { }
